@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Data (not included — download from Kaggle)
+ashrae-energy-prediction/
+outputs/preprocessed_daily_profiles.pkl
+outputs/stage1/latent_representations.npy
+outputs/stage1/clustered_daily_profiles.pkl
+
+# LaTeX build artifacts
+manuscript/*.aux
+manuscript/*.log
+manuscript/*.out
+manuscript/*.synctex.gz
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+[
+  {
+    "method": "CAE + KMeans",
+    "silhouette": 0.3728076219558716,
+    "description": "Deep learned features",
+    "subsample_size": 5000
+  },
+  {
+    "method": "KMeans on Raw Data",
+    "silhouette": 0.3479951618340342,
+    "description": "Baseline: raw normalised profiles",
+    "subsample_size": 5000
+  }
+]
