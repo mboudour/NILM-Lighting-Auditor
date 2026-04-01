@@ -771,13 +771,7 @@ elif page == "🏢 Case Study: Educational Building":
     })
     st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-    csv_bytes = display_df.to_csv(index=False).encode()
-    st.download_button(
-        "⬇️ Download disaggregated data (CSV)",
-        data=csv_bytes,
-        file_name=f"building_0_{selected_date}_disaggregated.csv",
-        mime="text/csv",
-    )
+    # Data download removed as requested
 
 # ═════════════════════════════════════════════════════════════════════════════
 # PAGE: Live Demo
@@ -922,16 +916,7 @@ elif page == "🔧 Live Demo: Disaggregate Your Data":
             else:
                 st.success("✅ **Lighting schedule appears efficient:** Off-hour lighting is within expected bounds.")
 
-            out_df = pd.DataFrame({
-                "hour": [f"{h:02d}:00" for h in hours],
-                "aggregate": raw_profile.round(4),
-                "base_load_trend": trend.round(4),
-                "lighting_isolated": lighting.round(4),
-            })
-            st.download_button(f"⬇️ Download disaggregated data — {label}",
-                               data=out_df.to_csv(index=False).encode(),
-                               file_name=f"{label.replace(' ', '_')}_disaggregated.csv",
-                               mime="text/csv")
+            # Data download removed as requested
             st.divider()
 
 # ═════════════════════════════════════════════════════════════════════════════
