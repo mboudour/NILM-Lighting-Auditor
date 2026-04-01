@@ -194,7 +194,7 @@ If you use this code or the associated paper, please cite:
 @article{boudour2026verification,
   title   = {Closing the Verification Gap: Non-Intrusive Auditing of
              Lighting Efficiency in Commercial Buildings},
-  author  = {Boudour, M.},
+  author  = {Boudourides, Moses},
   year    = {2026},
   note    = {Manuscript under review}
 }
@@ -204,4 +204,4 @@ If you use this code or the associated paper, please cite:
 
 ## License
 
-Copyright (c) 2026 M. Boudour. This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+Copyright (c) 2026 Moses Boudourides. This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
