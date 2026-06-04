@@ -1,0 +1,20 @@
+{
+  "ablation": {
+    "Full N-BEATS (Trend + Seasonality)": {
+      "mse": 0.021785510703921318,
+      "train_time_s": 5.506886720657349
+    },
+    "Ablation: No Trend Block": {
+      "mse": 0.031872667372226715,
+      "train_time_s": 0.6601581573486328
+    },
+    "Ablation: No Seasonality Block": {
+      "mse": 0.035347722470760345,
+      "train_time_s": 0.6551132202148438
+    }
+  },
+  "inference_latency": {
+    "profiles_per_second": 567656.9943698571,
+    "ms_per_profile": 0.001761627197265625
+  }
+}

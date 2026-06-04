@@ -1,0 +1,19 @@
+flowchart TD
+    A["Raw ASHRAE GEPIII Data\n(1,448 buildings, 16 climate zones)"] --> B["Stage 0: Preprocessing\nFilter · Clean · Pivot · Normalize\n~500,000 daily profiles"]
+    B --> C["Stage 1: Feature Learning\n1D Convolutional Autoencoder\nEncoder → Latent Space → Decoder"]
+    C --> D["MiniBatch KMeans Clustering\n(k=3, Silhouette=0.3728)"]
+    D --> E["Cluster 0\nScheduled Weekday"]
+    D --> F["Cluster 1\nReactive / Weekend"]
+    D --> G["Cluster 2\nContinuous Operation"]
+    B --> H["Stage 2: Signal Disaggregation\nN-BEATS Architecture"]
+    H --> I["Trend Block\nLow-frequency base load\n(HVAC / thermal inertia)"]
+    H --> J["Seasonality Block\nHigh-frequency pulses\n(Lighting / occupancy)"]
+    J --> K["Verification Gap Analysis\nOff-hours detection · Efficiency audit"]
+    style A fill:#4a90d9,color:#fff,stroke:#2c5f8a
+    style B fill:#5ba85a,color:#fff,stroke:#3a7039
+    style C fill:#e07b39,color:#fff,stroke:#a05020
+    style D fill:#e07b39,color:#fff,stroke:#a05020
+    style H fill:#9b59b6,color:#fff,stroke:#6c3483
+    style I fill:#9b59b6,color:#fff,stroke:#6c3483
+    style J fill:#9b59b6,color:#fff,stroke:#6c3483
+    style K fill:#c0392b,color:#fff,stroke:#922b21
