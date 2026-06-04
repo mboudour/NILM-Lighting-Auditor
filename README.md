@@ -167,7 +167,7 @@ The camera-ready paper is available in [`manuscript/paper.pdf`](manuscript/paper
 @inproceedings{boudourides2026verification,
   title     = {Closing the Verification Gap: Non-Intrusive Auditing of
                Lighting Efficiency in Commercial Buildings},
-  author    = {Boudourides, Moses},
+  author    = {Boudourides, Moses and Savvidou, Eleni},
   year      = {2026},
   note      = {Manuscript under review}
 }
