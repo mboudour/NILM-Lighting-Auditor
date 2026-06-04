@@ -7,7 +7,7 @@
 
 ## Overview
 
-This repository contains the full source code, pre-trained model weights, and all computation outputs for the paper *"Closing the Verification Gap: Non-Intrusive Auditing of Lighting Efficiency in Commercial Buildings"* (Moses Boudourides, 2026).
+This repository contains the full source code, pre-trained model weights, and all computation outputs for the paper *"Closing the Verification Gap: Non-Intrusive Auditing of Lighting Efficiency in Commercial Buildings"* (Moses Boudourides and Eleni Savvidou, 2026).
 
 We propose a fully **unsupervised, two-stage deep learning framework** that audits lighting efficiency in commercial buildings using only standard hourly aggregate electricity meter data — **no hardware sub-meters required**.
 
