@@ -1,0 +1,14 @@
+\begin{table}[H]
+\caption{Disaggregation Baselines (Reconstruction MSE --- lower is better)}
+\begin{center}
+\begin{tabular}{l l p{6cm}}
+\toprule
+\textbf{Method} & \textbf{MSE} & \textbf{Notes} \\
+\midrule
+N-BEATS (Ours) & 0.0628 & Two-stack neural basis decomposition \\
+Gradient Boosting & 0.1112 & Hour-of-day regression baseline \\
+STL Decomposition & $\approx 0$ & Classical seasonal-trend decomposition (trivial reconstruction) \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}

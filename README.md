@@ -3,21 +3,17 @@
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-green)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+---
+
 ## Overview
 
-This repository contains the full code, trained model weights, and interactive Streamlit demo for the paper
-*"Closing the Verification Gap: Non-Intrusive Auditing of Lighting Efficiency in Commercial Buildings"*.
+This repository contains the full source code, pre-trained model weights, and all computation outputs for the paper *"Closing the Verification Gap: Non-Intrusive Auditing of Lighting Efficiency in Commercial Buildings"* (Moses Boudourides, 2026).
 
-We propose a fully **unsupervised, two-stage deep learning framework** that audits lighting efficiency
-in commercial buildings using only standard hourly aggregate electricity meter data — **no hardware
-sub-meters required**.
+We propose a fully **unsupervised, two-stage deep learning framework** that audits lighting efficiency in commercial buildings using only standard hourly aggregate electricity meter data — **no hardware sub-meters required**.
 
 ### The Problem
 
-Commercial buildings routinely consume 20--60% more energy than predicted at design time — the
-**verification gap**. A primary driver is suboptimal lighting control: static schedules that leave
-lights on in unoccupied spaces. Fixing this requires knowing *when* and *where* lighting is being
-wasted, but hardware sub-metering costs £500--£5,000 per circuit.
+Commercial buildings routinely consume 20–60% more energy than predicted at design time — the **verification gap**. A primary driver is suboptimal lighting control: static schedules that leave lights on in unoccupied spaces. Fixing this requires knowing *when* and *where* lighting is being wasted, but hardware sub-metering costs £500–£5,000 per circuit.
 
 ### Our Solution
 
@@ -32,7 +28,7 @@ Raw Hourly Smart Meter Data (ASHRAE GEPIII)
             |
             v
 +-----------------------------+
-|  Stage 0: Preprocessing     |  stage0_preprocessing.py
+|  Stage 0: Preprocessing     |  scripts/stage0_preprocessing.py
 |  - Filter electricity meters|
 |  - Handle missing values    |
 |  - Pivot to daily profiles  |
@@ -41,7 +37,7 @@ Raw Hourly Smart Meter Data (ASHRAE GEPIII)
               |  ~500,000 normalized 24-hour profiles
               v
 +-----------------------------+
-|  Stage 1: 1D-CAE Clustering |  stage1_clustering.py
+|  Stage 1: 1D-CAE Clustering |  scripts/stage1_clustering.py
 |  - 1D Convolutional AE      |
 |  - 16-dim latent space      |
 |  - MiniBatch KMeans (k=3)   |
@@ -50,7 +46,7 @@ Raw Hourly Smart Meter Data (ASHRAE GEPIII)
               |  3 operational regime clusters
               v
 +-----------------------------+
-|  Stage 2: N-BEATS Disagg.   |  stage2_disagg.py
+|  Stage 2: N-BEATS Disagg.   |  scripts/stage2_disagg.py
 |  - Trend block (base load)  |
 |  - Seasonality block (light)|
 |  - Cross-climate eval       |
@@ -58,7 +54,8 @@ Raw Hourly Smart Meter Data (ASHRAE GEPIII)
 +-------------+---------------+
               |
               v
-    Isolated Lighting Profiles
+    Isolated High-Frequency Components
+    Consistent with Lighting Behavior
     + Actionable Efficiency Audit
 ```
 
@@ -70,51 +67,46 @@ Raw Hourly Smart Meter Data (ASHRAE GEPIII)
 |---|---|
 | Buildings analysed | 1,448 (16 climate zones) |
 | Daily profiles processed | ~500,000 |
-| Clustering: CAE + KMeans Silhouette | **0.3728** (vs. 0.3480 baseline) |
-| Disaggregation: N-BEATS MSE | **0.0628** (vs. 0.1112 Gradient Boosting) |
-| Cross-climate generalization | Train MSE 0.1306 -> Test MSE **0.1253** |
-| Robustness to noise (sigma=0.20) | MSE **0.0598** (stable) |
+| Clustering Silhouette Score (CAE features) | **0.3728** (95% CI: [0.3226, 0.3992]) |
+| Clustering Silhouette Score (raw features, baseline) | 0.3480 |
+| Optimal number of clusters (k) | **3** (peak Silhouette across k=2,3,4,5) |
+| Disaggregation MSE (N-BEATS) | **0.0628** |
+| Disaggregation MSE (Gradient Boosting baseline) | 0.1112 |
+| Cross-climate generalization (train → test MSE) | 0.1306 → **0.1253** |
+| Robustness to noise (σ=0.20) | MSE **0.0598** (stable) |
+| Ablation: removing Trend Block | +46.3% MSE degradation |
+| Ablation: removing Seasonality Block | +62.0% MSE degradation |
+| Inference throughput | ~567,000 profiles/second (CPU) |
+| Full pipeline training time | ~47 minutes (CPU, ~500K profiles) |
 
 ---
 
 ## Repository Structure
 
 ```
-.
-+-- stage0_preprocessing.py      # Data loading, cleaning, normalization
-+-- stage1_clustering.py         # 1D-CAE training + KMeans + t-SNE
-+-- stage2_disagg.py             # N-BEATS disaggregation + all evaluations
-+-- requirements.txt             # Python dependencies
-+-- README.md
-+-- LICENSE
-|
-+-- manuscript/
-|   +-- paper.tex                # Main LaTeX manuscript
-|   +-- section_introduction.tex
-|   +-- section_related_work.tex
-|   +-- section_methodology.tex
-|   +-- section_experiments.tex
-|   +-- section_conclusion.tex
-|   +-- svproc.cls               # Springer proceedings class
-|   +-- figures/                 # All paper figures (PNG, 300 dpi)
-|
-+-- streamlit_app/
-    +-- app.py                   # Interactive demo application (8 sections)
-    +-- nbeats_disaggregator.pt  # Pre-trained N-BEATS weights
-    +-- requirements.txt
-    +-- assets/
-        +-- plots/               # Pre-computed figures from the paper
-        +-- data/                # Pre-computed result CSVs and JSON
-```
-
----
-
-## Installation
-
-```bash
-git clone https://github.com/mboudour/NILM-Lighting-Auditor.git
-cd NILM-Lighting-Auditor
-pip install -r requirements.txt
+NILM-Lighting-Auditor/
+├── computations/
+│   ├── scripts/
+│   │   ├── stage0_preprocessing.py       # Data loading, cleaning, normalization
+│   │   ├── stage1_clustering.py          # 1D-CAE training, KMeans, t-SNE
+│   │   ├── stage2_disagg.py              # N-BEATS disaggregation, evaluation, case study
+│   │   ├── ablation_study.py             # N-BEATS ablation study (reviewer addition)
+│   │   ├── reviewer_revisions.py         # Clustering sensitivity & bootstrap CI (reviewer addition)
+│   │   ├── plot_ablation.py              # Ablation bar chart figure
+│   │   ├── plot_clustering_sensitivity.py  # Clustering sensitivity figure
+│   │   └── pipeline_diagram.mmd          # Mermaid source for architecture diagram (Fig. 1)
+│   ├── outputs/
+│   │   ├── figures/                      # All paper figures (PNG, 300 dpi)
+│   │   ├── tables/                       # All paper tables (LaTeX .tex files)
+│   │   ├── models/                       # Pre-trained model weights (.pt)
+│   │   └── logs/                         # Pipeline execution log, ablation results JSON
+│   └── requirements.txt                  # Python dependencies
+├── manuscript/
+│   ├── paper.pdf                         # Camera-ready paper (PDF)
+│   └── README.md
+├── .gitignore
+├── LICENSE                               # MIT License
+└── README.md
 ```
 
 ---
@@ -123,80 +115,61 @@ pip install -r requirements.txt
 
 The pipeline uses the **ASHRAE Great Energy Predictor III** dataset, publicly available on Kaggle:
 
-```
-https://www.kaggle.com/competitions/ashrae-energy-prediction
-```
+> https://www.kaggle.com/competitions/ashrae-energy-prediction
 
-Download and place the files in an `ashrae-energy-prediction/` directory:
+The raw dataset is **not included** in this repository. Download it from Kaggle and place the files in a local `data/ashrae-energy-prediction/` directory before running the pipeline scripts.
+
+Required files:
 
 ```
-ashrae-energy-prediction/
-+-- train.csv              (~678 MB)
-+-- test.csv               (~1.46 GB)
-+-- building_metadata.csv  (~46 KB)
-+-- weather_train.csv      (~7.5 MB)
-+-- weather_test.csv       (~14.8 MB)
+data/ashrae-energy-prediction/
+├── train.csv              (~678 MB)
+├── building_metadata.csv  (~46 KB)
+└── weather_train.csv      (~7.5 MB)
 ```
-
-> **Note:** The raw dataset is NOT included in this repository. Only the pre-trained model weights
-> and pre-computed result files are provided. The Streamlit demo runs entirely from the
-> pre-trained weights and does not require the raw data.
 
 ---
 
 ## Reproducing Results
 
 ```bash
-# Step 1: Preprocess the raw ASHRAE data (~10 min)
-python stage0_preprocessing.py
+# 1. Clone the repository
+git clone https://github.com/mboudour/NILM-Lighting-Auditor.git
+cd NILM-Lighting-Auditor
 
-# Step 2: Train the 1D-CAE and cluster (~30 min on GPU)
-python stage1_clustering.py
+# 2. Install dependencies
+pip install -r computations/requirements.txt
 
-# Step 3: Train N-BEATS and run all evaluations (~20 min on GPU)
-python stage2_disagg.py
+# 3. Download the ASHRAE dataset from Kaggle (see above)
+#    Place files in: data/ashrae-energy-prediction/
+
+# 4. Run the pipeline
+python computations/scripts/stage0_preprocessing.py   # ~10 min
+python computations/scripts/stage1_clustering.py      # ~30 min
+python computations/scripts/stage2_disagg.py          # ~20 min
+
+# 5. (Optional) Reproduce reviewer-response analyses
+python computations/scripts/reviewer_revisions.py     # Clustering sensitivity + bootstrap CI
+python computations/scripts/ablation_study.py         # N-BEATS ablation study
 ```
 
-All outputs (figures, CSVs, model weights, logs) will be saved to `outputs/`.
+All output figures, tables, model weights, and logs will be saved under `computations/outputs/`.
 
 ---
 
-## Interactive Streamlit Demo
+## Paper
 
-Run the demo locally without needing the raw dataset:
+The camera-ready paper is available in [`manuscript/paper.pdf`](manuscript/paper.pdf).
 
-```bash
-cd streamlit_app
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-The app includes 8 sections:
-
-| Section | Content |
-|---|---|
-| Overview & Key Results | Headline metrics, pipeline description, paper figures |
-| Stage 1: Clustering | t-SNE visualization, silhouette score comparison |
-| Stage 2: Disaggregation | Baseline comparison table and annotated charts |
-| Cross-Climate Generalization | Train/test MSE across climate zones |
-| Sensitivity & Robustness | Interactive noise slider with live N-BEATS inference |
-| Case Study | Day-by-day analysis of an educational building |
-| Live Demo | Upload your own building CSV for real-time disaggregation |
-| Methodology & Dataset | Full technical documentation and dataset access guide |
-
----
-
-## Citation
-
-If you use this code or the associated paper, please cite:
+**Citation** (to be updated with full proceedings reference upon publication):
 
 ```bibtex
-@article{boudour2026verification,
-  title   = {Closing the Verification Gap: Non-Intrusive Auditing of
-             Lighting Efficiency in Commercial Buildings},
-  author  = {Boudourides, Moses},
-  year    = {2026},
-  note    = {Manuscript under review}
+@inproceedings{boudourides2026verification,
+  title     = {Closing the Verification Gap: Non-Intrusive Auditing of
+               Lighting Efficiency in Commercial Buildings},
+  author    = {Boudourides, Moses},
+  year      = {2026},
+  note      = {Manuscript under review}
 }
 ```
 
